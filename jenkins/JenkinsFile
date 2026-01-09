@@ -1,5 +1,10 @@
 pipeline {
     agent any
+    
+    environment {
+        GOCACHE = "${WORKSPACE}/.cache/go-build"
+        GOPATH = "${WORKSPACE}/.go"
+    }
 
     stages {
         stage('Unit Tests - Backend') {
@@ -11,7 +16,11 @@ pipeline {
             }
             steps {
                dir("bugtracker-backend"){
-                 sh 'go test -v ./...'
+                 sh '''
+                    mkdir -p ${GOCACHE}
+                    mkdir -p ${GOPATH}
+                    go test -v ./...
+                 '''
                }
             }
         }
