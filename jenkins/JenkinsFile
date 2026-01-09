@@ -20,12 +20,23 @@ pipeline {
                     mkdir -p ${GOCACHE}
                     mkdir -p ${GOPATH}
                     go test -v ./... 2>&1 | go-junit-report > test-results.xml
+
+                    go test -coverprofile=coverage.out -covermode=atomic ./...
+                    go tool cover -html=coverage.out -o coverage.html
+
+                    mkdir -p reports 
+                    mv converage.html reports/
                  '''
                }
             }
             post {
                always {
                     junit 'bugtracker-backend/test-results.xml' 
+                    publishHTML target: [
+                        reportDir: "bugtracker-backend/reports"
+                        reportFiles: "coverage.html"
+                        reportName: "Backend Coverage Report"
+                    ]
                 } 
             }
         }
