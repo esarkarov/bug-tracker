@@ -25,7 +25,7 @@ pipeline {
                     go tool cover -html=coverage.out -o coverage.html
 
                     mkdir -p reports 
-                    mv converage.html reports/
+                    mv coverage.html reports/
                  '''
                }
             }
