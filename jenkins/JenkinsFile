@@ -71,7 +71,6 @@ pipeline {
                         }
                     }
                 }
-
                 stage("Lunch Application") {
                     agent {
                         docker {
@@ -98,6 +97,16 @@ pipeline {
                             sh "npx wait-port http://localhost:8080/api/health -t 30000"
                             sh "npm ci"
                             sh "npx playwright test"
+                        }
+                    }
+                    post {
+                        always {
+                            junit "tests-api/test-results/results.xml"
+                            publishHTML target: [
+                                reportDir: "tests-api/plawright-report",
+                                reportFiles: "index.html"
+                                reportName: "Playwright API Test Report"
+                            ]
                         }
                     }
                 }
